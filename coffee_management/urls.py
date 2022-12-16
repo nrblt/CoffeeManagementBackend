@@ -20,4 +20,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('djoser.urls.jwt')),
     path('auth/', include('djoser.urls')),
+    path('product/', include('product.urls')),
+    path('category/', include('category.urls')),
+    path('cart_item/', include('cart.urls')),
+
 ]
