@@ -22,6 +22,6 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('product/', include('product.urls')),
     path('category/', include('category.urls')),
-    path('cart_item/', include('cart.urls')),
+    path('cart/', include('cart.urls')),
 
 ]
