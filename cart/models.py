@@ -1,20 +1,27 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth import authenticate, get_user_model
 
+from order.models import Order
 from product.models import Product
 
+User = get_user_model()
 
-# Create your models here.
+
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_price = models.IntegerField()
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     count = models.IntegerField()
+
+    @property
+    def get_product_name(self):
+        return "product_name"
 
 
 @receiver(post_save, sender=User)

@@ -44,10 +44,13 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'djoser',
     'django_extensions',
+    'drf_spectacular',
 
     'product',
     'category',
     'cart',
+    'order',
+    'staff'
 ]
 
 MIDDLEWARE = [
@@ -87,7 +90,7 @@ WSGI_APPLICATION = 'coffee_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'coffee_managemant', 
+        'NAME': 'cm', 
         'USER': 'postgres', 
         'PASSWORD': '1234',
         'HOST': '127.0.0.1', 
@@ -133,7 +136,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema' 
 }
 
 
@@ -177,3 +180,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
