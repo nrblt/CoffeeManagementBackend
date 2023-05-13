@@ -27,7 +27,7 @@ class CartItemViewSet(ModelViewSet):
         if serializer.is_valid():
             if serializer.data['count'] <= 0:
                 raise ValidationError("Quantity must be greater than 0")
-            if self.queryset.filter(cart = cart).exists():
+            if self.queryset.filter(product=serializer.data['product']).exists():
                 print("1234")
                 cart_item = self.queryset.get(cart = cart)
                 
@@ -37,6 +37,7 @@ class CartItemViewSet(ModelViewSet):
                 cart.total_price += cart_item.count * cart_item.product.price
                 cart.save()
                 return Response(serializer.data)
+            
             cart_item = self.model.objects.create(cart = cart, order = None, product_id = serializer.data['product'], count = serializer.data['count'])
             cart_item.save()
             cart.total_price = cart.total_price + cart_item.product.price * cart_item.count
@@ -49,12 +50,10 @@ class CartViewSet(ModelViewSet):
     queryset = Cart.objects.all()
 
     def list(self, request):
-                
         user = request.user.pk
         print(user)
         if user:
             cart = Cart.objects.get(user=user)
-            # queryset = CartItem.objects.filter(cart = cart)
             serializer = CartWithCartItemsSerializer(cart, many=False)
 
             return Response(serializer.data)

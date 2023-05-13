@@ -81,6 +81,9 @@ TEMPLATES = [
     },
 ]
 
+# DJOSER = {
+    # 'SEND_ACTIVATION_EMAIL': True
+# }
 WSGI_APPLICATION = 'coffee_management.wsgi.application'
 
 

@@ -1,12 +1,16 @@
+import json
+
 from django.shortcuts import render
-from rest_framework import viewsets
-from .models import Order
-from .serializers import OrderSerializer
+from rest_framework import status, viewsets
+from rest_framework.exceptions import NotAuthenticated, ValidationError
+from rest_framework.response import Response
+
 from cart.models import Cart, CartItem
 from cart.serializers import CartItemSerializer
-from rest_framework.exceptions import (ValidationError, NotAuthenticated)
-from rest_framework import status
-from rest_framework.response import Response
+
+from .models import Order
+from .serializers import OrderSerializer
+
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
@@ -38,5 +42,9 @@ class OrderViewSet(viewsets.ModelViewSet):
             raise NotAuthenticated("Not authenticated")
 
         cart_items = CartItem.objects.filter(order__user = user)
-        serilizer = CartItemSerializer(cart_items, many=True)
-        return Response(serilizer.data)
+        serializer = CartItemSerializer(cart_items, many=True)
+
+        for ser in serializer.data:
+                ser['created_date'] = self.queryset.get(pk=ser['order']).created_at
+        print(serializer.data)
+        return Response(sorted(serializer.data, key=lambda x: x["created_date"], reverse=True))
