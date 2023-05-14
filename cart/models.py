@@ -30,9 +30,3 @@ def create_cart(sender, instance, created, **kwargs):
     if created:
         Cart.objects.create(user = instance, total_price = 0)
 
-@receiver(pre_delete, sender=CartItem)
-def minus_total_price(sender, instance, **kwargs):
-    print(sender)
-    cart = instance.cart
-    cart.total_price = cart.total_price - instance.count * instance.product.price
-    cart.save()

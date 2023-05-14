@@ -32,7 +32,7 @@ class CartItemViewSet(ModelViewSet):
                 
                 cart.total_price -= cart_item.count * cart_item.product.price
                 
-                cart.total_price -= cart_item.count * cart_item.product.price
+                # cart.total_price -= cart_item.count * cart_item.product.price
                 cart_item.count = cart_item.count + serializer.data['count']
                 cart_item.save()
                 cart.total_price += cart_item.count * cart_item.product.price
