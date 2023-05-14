@@ -5,7 +5,7 @@ from django.http import Http404
 from rest_framework.exceptions import (ValidationError, NotAuthenticated)
 from rest_framework import status
 from django.http import HttpResponse, JsonResponse
-
+from product.models import Product
 from product.models import Product
 from .models import Cart, CartItem
 from .serializers import CartItemSerializer, CartWithCartItemsSerializer, CartSerializer
@@ -56,7 +56,11 @@ class CartViewSet(ModelViewSet):
         if user:
             cart = Cart.objects.get(user=user)
             serializer = CartWithCartItemsSerializer(cart, many=False)
-
+            
+            for ser in serializer.data['cartitem_set']:
+                print(ser)
+                # ser['image'] = "fsdfas"
+                ser['image'] = str((Product.objects.get(pk=ser['product'])).image)
             return Response(serializer.data)
         else:
             raise NotAuthenticated("Not authenticated")
