@@ -14,7 +14,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ["cart", 'order', 'product', 'count', 'product_name', 'product_price']
+        fields = ['id',"cart", 'order', 'product', 'count', 'product_name', 'product_price']
         extra_kwargs = {'cart': {'required': 'False'}}
     def get_product_name(self, obj):
         # return obj.product['name']
