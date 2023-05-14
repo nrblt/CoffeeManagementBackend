@@ -29,4 +29,3 @@ def create_cart(sender, instance, created, **kwargs):
     print(sender)
     if created:
         Cart.objects.create(user = instance, total_price = 0)
-
