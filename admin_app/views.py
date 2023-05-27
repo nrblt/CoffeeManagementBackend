@@ -67,6 +67,7 @@ class AdminViewSet(ViewSet):
         
         if "BARISTA" != (get_object_or_404(StaffAccount, user=user)).position:
             raise ValidationError("Not barista account")
+
         
         orders = Order.objects.filter(status='PAID')
         return Response((OrderSerializer(orders, many=True)).data)
