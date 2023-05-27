@@ -8,8 +8,6 @@ User = get_user_model()
 class Order(models.Model):
     class OrderStatus(models.TextChoices):
         PAID = "PAID"
-        PREPARING = "PREPARING"
-        SERVING = "SERVING"
         DONE = "DONE"
 
     total_price = models.IntegerField()
