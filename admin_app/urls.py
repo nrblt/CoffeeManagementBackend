@@ -11,9 +11,10 @@ from .views import AdminViewSet
 # urlpatterns = router.urls
 get_position =  AdminViewSet.as_view({'get': 'getPosition'})
 get_incomes =  AdminViewSet.as_view({'get': 'getIncomes'})
+get_paid_orders =  AdminViewSet.as_view({'get': 'getPaidOrders'})
 
 urlpatterns = [
     path('get-position', get_position),
     path('get-incomes', get_incomes),
-
+    path('get-paid-orders', get_paid_orders),
 ]
