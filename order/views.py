@@ -45,6 +45,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer = CartItemSerializer(cart_items, many=True)
 
         for ser in serializer.data:
-                ser['created_date'] = self.queryset.get(pk=ser['order']).created_at
+            ser['created_date'] = self.queryset.get(pk=ser['order']).created_at
+            ser['total_price'] = ser['product_price'] * ser['count']
         print(serializer.data)
+        
         return Response(sorted(serializer.data, key=lambda x: x["created_date"], reverse=True))
