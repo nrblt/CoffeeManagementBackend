@@ -1,14 +1,18 @@
+import datetime
+
 from django.contrib.auth import authenticate, get_user_model
-from django.shortcuts import render
+from django.db.models import Sum
+from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotAuthenticated, ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ViewSet
-import datetime
-from staff.models import StaffAccount
+
 from order.models import Order
+from order.serializers import OrderSerializer
+from staff.models import StaffAccount
+
 from .serializers import PositionSerializer
-# from datetime import datetime, timedelta
-from django.db.models import Sum
 
 User = get_user_model()
 
@@ -27,6 +31,13 @@ class AdminViewSet(ViewSet):
             return Response({'position': 'customer'})
 
     def getIncomes(self, request):
+        user = request.user.id
+        if not user:
+            raise NotAuthenticated("Not authenticated")
+        
+        if "ADMIN" != (get_object_or_404(StaffAccount, user=user)).position:
+            raise ValidationError("Not admin account")
+        
         today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
         orders = Order.objects.filter(created_at__range=(today_min, today_max))
@@ -48,3 +59,14 @@ class AdminViewSet(ViewSet):
             context['months'].append({str(datem.month):in_month_earning})
             datem = datem - datetime.timedelta(days=30)
         return Response(context)
+    
+    def getPaidOrders(self, request):
+        user = request.user.id
+        if not user:
+            raise NotAuthenticated("Not authenticated")
+        
+        if "BARISTA" != (get_object_or_404(StaffAccount, user=user)).position:
+            raise ValidationError("Not barista account")
+        
+        orders = Order.objects.filter(status='PAID')
+        return Response((OrderSerializer(orders, many=True)).data)
