@@ -10,6 +10,10 @@ from .views import AdminViewSet
 # router.register("", AdminViewSet)
 # urlpatterns = router.urls
 get_position =  AdminViewSet.as_view({'get': 'getPosition'})
+today_income =  AdminViewSet.as_view({'get': 'todaysIncome'})
+
 urlpatterns = [
     path('get-position', get_position),
+    path('today-income', today_income),
+
 ]
