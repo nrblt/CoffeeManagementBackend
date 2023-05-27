@@ -20,9 +20,9 @@ class AdminViewSet(ViewSet):
 
         user = User.objects.get(username=serializer.data['username'])
         print(user)
-        is_staff = StaffAccount.objects.get(user = user)
+        is_staff = StaffAccount.objects.filter(user = user)
         if is_staff:
-            return Response({'position': is_staff.position})
+            return Response({'position': is_staff[0].position})
         else:
             return Response({'position': 'customer'})
 
