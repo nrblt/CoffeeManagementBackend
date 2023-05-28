@@ -46,6 +46,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         for ser in serializer.data:
             ser['created_date'] = self.queryset.get(pk=ser['order']).created_at
+            ser['status'] = self.queryset.get(pk=ser['order']).status
             ser['total_price'] = ser['product_price'] * ser['count']
         print(serializer.data)
         
