@@ -90,3 +90,13 @@ class AdminViewSet(ViewSet):
             user = User.objects.get(username=serializer.data['username'])
             staff = StaffAccount.objects.create(user=user,position=serializer.data['position'])
             return Response(serializer.data)
+
+    def deleteUser(self, request, pk):
+        user = request.user.id
+        if not user:
+            raise NotAuthenticated("Not authenticated")
+        
+        if "ADMIN" != (get_object_or_404(StaffAccount, user=user)).position:
+            raise ValidationError("Not admin account")
+        del_user = User.objects.filter(pk=pk).delete()
+        return Response({"message":"success"})
