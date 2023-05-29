@@ -10,3 +10,4 @@ djangorestframework-simplejwt
 redis
 celery
 drf-spectacular
+requests

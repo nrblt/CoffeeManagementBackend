@@ -1,10 +1,11 @@
 import datetime
 
+import requests
 from django.contrib.auth import authenticate, get_user_model
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotAuthenticated, ValidationError
+from rest_framework.exceptions import NotAuthenticated, ValidationError, NotAcceptable
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ViewSet
 
@@ -12,7 +13,7 @@ from order.models import Order
 from order.serializers import OrderSerializer
 from staff.models import StaffAccount
 
-from .serializers import PositionSerializer
+from .serializers import CreateStaffAccountSerializer, PositionSerializer
 
 User = get_user_model()
 
@@ -70,3 +71,22 @@ class AdminViewSet(ViewSet):
         
         orders = Order.objects.filter(status='PAID')
         return Response((OrderSerializer(orders, many=True)).data)
+    
+    def createStaffUser(self,request):
+        user = request.user.id
+        if not user:
+            raise NotAuthenticated("Not authenticated")
+        
+        if "ADMIN" != (get_object_or_404(StaffAccount, user=user)).position:
+            raise ValidationError("Not admin account")
+        serializer = CreateStaffAccountSerializer(data=request.data)
+        serializer.is_valid()
+        url = 'http://127.0.0.1:8000/auth/users/'
+        par = {'username':serializer.data['username'],"password":serializer.data['password']}
+        x = requests.post(url, json = par)
+        if x.status_code == 400:
+            raise NotAcceptable("This username is taken")
+        else:
+            user = User.objects.get(username=serializer.data['username'])
+            staff = StaffAccount.objects.create(user=user,position=serializer.data['position'])
+            return Response(serializer.data)
